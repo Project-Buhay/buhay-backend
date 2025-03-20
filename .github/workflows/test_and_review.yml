@@ -42,12 +42,10 @@ jobs:
           DB_CACHE_TABLE_NAME: ${{ secrets.DB_CACHE_TABLE_NAME }}
           DB_CACHE_URL: ${{ secrets.DB_CACHE_URL }}
           GOOGLE_MAPS_API: ${{ secrets.GOOGLE_MAPS_API }}
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
         run: |
-          fastapi dev main.py
+          nohup uvicorn main:app --host 127.0.0.1 --port 8000 & # run in background
           sleep 5 # wait to start
 
       - name: Run pytest with secrets
-
         run: |
           pytest --maxfail=5 --disable-warnings
