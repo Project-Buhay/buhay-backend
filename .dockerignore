@@ -1,0 +1,16 @@
+# Virtual environment
+venv/
+
+# Cache directories
+cache/
+__pycache__/
+.pytest_cache/
+
+# Python compiled files
+*.pyc
+
+# DS_store
+.DS_Store
+
+# vscode
+.vscode/
