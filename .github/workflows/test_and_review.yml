@@ -47,5 +47,14 @@ jobs:
           sleep 5 # wait to start
 
       - name: Run pytest with secrets
+        env:
+          DB_CACHE_NAME: ${{ secrets.DB_CACHE_NAME }}
+          DB_CACHE_USER: ${{ secrets.DB_CACHE_USER }}
+          DB_CACHE_PASSWORD: ${{ secrets.DB_CACHE_PASSWORD }}
+          DB_CACHE_HOST: ${{ secrets.DB_CACHE_HOST }}
+          DB_CACHE_PORT: ${{ secrets.DB_CACHE_PORT }}
+          DB_CACHE_TABLE_NAME: ${{ secrets.DB_CACHE_TABLE_NAME }}
+          DB_CACHE_URL: ${{ secrets.DB_CACHE_URL }}
+          GOOGLE_MAPS_API: ${{ secrets.GOOGLE_MAPS_API }}
         run: |
           pytest --maxfail=5 --disable-warnings
