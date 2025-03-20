@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: Run Pytest
+    name: Run pytest
     runs-on: ubuntu-latest
 
     steps:
@@ -32,6 +32,11 @@ jobs:
           pip install -r requirements.txt
           pip install python-dotenv 
 
+      - name: Start FastAPI server
+        run: |
+          fastapi dev main.py
+          sleep 5 # wait to start
+
       - name: Run pytest with secrets
         env:
           DB_CACHE_NAME: ${{ secrets.DB_CACHE_NAME }}
@@ -42,5 +47,6 @@ jobs:
           DB_CACHE_TABLE_NAME: ${{ secrets.DB_CACHE_TABLE_NAME }}
           DB_CACHE_URL: ${{ secrets.DB_CACHE_URL }}
           GOOGLE_MAPS_API: ${{ secrets.GOOGLE_MAPS_API }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
         run: |
           pytest --maxfail=5 --disable-warnings
