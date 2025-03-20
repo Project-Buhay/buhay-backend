@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: Pytest Steps
+    name: Run Pytest
     runs-on: ubuntu-latest
 
     steps:
@@ -23,14 +23,24 @@ jobs:
         with:
           python-version: "3.13"
         
-      - name: Display Python version for quick check
+      - name: Check Python version
         run: python -c "import sys; print(sys.version)"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install python-dotenv 
 
-      - name: Run pytest
+      - name: Run pytest with secrets
+        env:
+          DB_CACHE_NAME: ${{ secrets.DB_CACHE_NAME }}
+          DB_CACHE_USER: ${{ secrets.DB_CACHE_USER }}
+          DB_CACHE_PASSWORD: ${{ secrets.DB_CACHE_PASSWORD }}
+          DB_CACHE_HOST: ${{ secrets.DB_CACHE_HOST }}
+          DB_CACHE_PORT: ${{ secrets.DB_CACHE_PORT }}
+          DB_CACHE_TABLE_NAME: ${{ secrets.DB_CACHE_TABLE_NAME }}
+          DB_CACHE_URL: ${{ secrets.DB_CACHE_URL }}
+          GOOGLE_MAPS_API: ${{ secrets.GOOGLE_MAPS_API }}
         run: |
-          pytest
+          pytest --maxfail=5 --disable-warnings
