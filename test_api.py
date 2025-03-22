@@ -48,7 +48,7 @@ def test_naive_tsp():
 
 def test_login():
     url = f"{API_BASE_URL}/login"
-    response = requests.get(
+    response = requests.post(
         url,
         json={
             "username": "Constituent1",
@@ -60,7 +60,7 @@ def test_login():
 
 def test_convert_coordinates():
     url = f"{API_BASE_URL}/convert_coordinates"
-    response = requests.get(
+    response = requests.post(
         url,
         json=[
             {
@@ -80,7 +80,7 @@ def test_convert_coordinates():
 
     assert response.status_code == 200
     assert response.json() == {
-        "location_names": [
+        "locations": [
             "University of the Philippines Alumni Engineers' Centennial Hall, P. Velasquez Street, Diliman, Quezon City, 1800 Metro Manila, Philippines",
             "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines"
         ]
@@ -382,4 +382,79 @@ def test_checkCoordinates():
     assert response.json() == {
         "message": "true"
     }
-    
+
+def test_add_request():
+    url = f"{API_BASE_URL}/add_request"
+    response = requests.post(
+        url,
+        json={
+            "person_id": 3,
+            "coordinates": [
+                {"coordinates": ["121.0694063","14.65679956"]},
+                {"coordinates": ["121.0411614","14.66310851"]},
+                {"coordinates": ["121.0219046","14.65919254"]},
+                {"coordinates": ["121.0177288","14.65537632"]}
+            ]
+        }
+    )
+
+    assert response.status_code == 200
+    assert "request_id" in response.json()
+
+def test_get_route_info():
+    url = f"{API_BASE_URL}/get_route_info"
+    response = requests.post(
+        url,
+        json={
+        "route_id": 1
+        }
+    )
+
+    assert response.status_code == 200
+    assert "payload" in response.json()
+
+def test_save_route():
+    url = f"{API_BASE_URL}/save_route"
+    response = requests.post(
+        url,
+        json={
+        "request_id": 1,
+        "points": {
+            "start": {
+            "coordinates": [
+                121.04932,
+                14.65491
+            ]
+            },
+            "other_points": [
+            {
+                "coordinates": [
+                121.07471,
+                14.66651
+                ]
+            }
+            ]
+        }
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "success": True
+    }
+
+
+def test_update_rescued():
+    url = f"{API_BASE_URL}/update_rescued"
+    response = requests.post(
+        url,
+        json={
+        "request_id": 0
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "done"
+    }
+
