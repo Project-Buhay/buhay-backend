@@ -1,25 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 
-from models import LoginInput
-from routing.cache_database import search_login
+from models import RouteInfo
+from routing.cache_database import route_info
 
 router = APIRouter()
 
-
-@router.post("/login", status_code=status.HTTP_200_OK)
-async def login_endpoint(login_input: LoginInput):
+@router.post("/get_route_info", status_code=status.HTTP_200_OK)
+async def get_route_info(route_id: RouteInfo):
     try:
-        db_data = await search_login(login_input.username, login_input.password)
-
-        # Valid
-        if db_data:
-            return db_data
-
-        # Invalid: Return person_id = 0, access_level = 0
-        # since these cases are normally impossible.
-        else:
-            return {"person_id": 0, "access_control": 0}
-
+        data = await route_info(route_id.route_id)
+        return {"payload": data}
+    
     except ValueError as e:
         # Handle specific exceptions with a 400 Bad Request
         raise HTTPException(

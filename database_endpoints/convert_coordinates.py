@@ -1,25 +1,22 @@
 from fastapi import APIRouter, HTTPException, status
 
-from models import LoginInput
-from routing.cache_database import search_login
+from models import Point
+import googlemaps
+from db_env import GOOGLE_MAPS_API
 
 router = APIRouter()
+gmaps = googlemaps.Client(key = GOOGLE_MAPS_API)
 
-
-@router.post("/login", status_code=status.HTTP_200_OK)
-async def login_endpoint(login_input: LoginInput):
+@router.post("/convert_coordinates", status_code = status.HTTP_200_OK)
+async def convert_coordinates(points: list[Point]):
     try:
-        db_data = await search_login(login_input.username, login_input.password)
-
-        # Valid
-        if db_data:
-            return db_data
-
-        # Invalid: Return person_id = 0, access_level = 0
-        # since these cases are normally impossible.
-        else:
-            return {"person_id": 0, "access_control": 0}
-
+        location_names: list[str]= list()
+        for point in points:
+            print(point)
+            lng, lat = point.coordinates[0], point.coordinates[1]
+            location_names.append(gmaps.reverse_geocode((lat, lng), result_type="street_address")[0]["formatted_address"])
+        return {"locations": location_names}
+    
     except ValueError as e:
         # Handle specific exceptions with a 400 Bad Request
         raise HTTPException(
