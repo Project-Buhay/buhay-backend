@@ -22,6 +22,7 @@ This API calculates the safest route between a start and an end location, using 
       DB_CACHE_PORT = ""
       DB_CACHE_TABLE_NAME = ""
       DB_CACHE_URL = ""
+      GOOGLE_MAPS_API = ""
    ```
 
 ---
