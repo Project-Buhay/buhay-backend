@@ -204,4 +204,40 @@ The _tsp endpoint_ accepts a POST Request at the `/tsp` path. This request conta
 
 ---
 
+## Contributing
+1. Fetch the latest changes from the remote repository.
+    ```
+    git fetch
+    git checkout main
+    git pull
+    ```
+
+2. After pulling the latest changes, create a feature branch:
+    ```
+    # Create a new branch for your feature or fix
+    git checkout -b feature/awesome-feature
+    ```
+
+    Example:
+    ```
+    git checkout -b feature/login-page # or 
+    git checkout -b bugfix/overflow-issue
+    ```
+
+3. From that same branch, make your changes.
+    ```
+    # Add your changes
+    git add .
+
+    # Commit with a meaningful message
+    git commit -m "feat: add awesome feature"
+
+    # Push the changes to your branch
+    git push origin feature/awesome-feature
+    ```
+
+4. Finally, open up a **Pull Request** targeting the main branch! Add a descriptive title and a summary of your changes! The PR would automatically then require a review before merging it to main.
+
+---
+
 For further assistance, refer to the FastAPI [documentation](https://fastapi.tiangolo.com/) or contact the project maintainer.
