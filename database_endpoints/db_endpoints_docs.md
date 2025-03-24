@@ -1,13 +1,14 @@
 This file serves as documentation for all database endpoints.
 
 - [/login](#login)
-- [/convert\_coordinates](#convert_coordinates)
-- [/add\_request](#add_request)
-- [/save\_route](#save_route)
-- [/get\_route\_info](#get_route_info)
-- [/update\_rescued](#update_rescued)
-- [/update\_ongoing](#update_ongoing)
-- [/get\_rescuers](#get_rescuers)
+- [/convert_coordinates](#convert_coordinates)
+- [/add_request](#add_request)
+- [/save_route](#save_route)
+- [/get_route_info](#get_route_info)
+- [/update_rescued](#update_rescued)
+- [/update_ongoing](#update_ongoing)
+- [/get_rescuers](#get_rescuers)
+- [/assign](#assign)
 
 # /login
 
@@ -292,5 +293,43 @@ When the endpoint is called, it returns all the persons from `people` table with
         },
         // ...
     ]
+}
+```
+
+# /assign
+
+The endpoint takes in a `request_id: int` and a `rescuer_id: int`. Then, for the corresponding row of the `request_id` in the `dispatcher_data` table:
+- The `old_rescuer_id` field becomes the current value of the `rescuer_id` field of the row.
+- The value in the `rescuer_id` field becomes the new `rescuer_id` from the input. 
+
+Then, the endpoint returns `success = true` upon successful update of the fields. 
+
+**Sample Input**
+```JSON
+{
+    "request_id": 10,
+    "rescuer_id": 4
+}
+
+// Current values of rescuer_id and old_rescuer_id fields
+{
+    "request_id": 10,
+    "rescuer_id": 2,
+    "old_rescuer_id": null
+    // Other fields in dispatcher_data
+} 
+```
+
+**Sample Output**
+```JSON
+{
+    "success": true
+}
+
+// Updated values of rescuer_id and old_rescuer_id fields
+{
+    "request_id": 10,
+    "rescuer_id": 4,
+    "old_rescuer_id": 2 
 }
 ```
