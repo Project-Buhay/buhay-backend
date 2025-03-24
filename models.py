@@ -64,3 +64,7 @@ class RouteInfo(BaseModel):
 
 class UpdateRescued(BaseModel):
     request_id: int
+
+
+class UpdateOngoing(BaseModel):
+    request_id: int
