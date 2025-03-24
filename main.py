@@ -9,7 +9,7 @@ from tests.naive_tsp import naive_tsp  # For testing
 
 from database_endpoints import (
     convert_coordinates,
-    login_endpoint,
+    login,
     add_request,
     get_route_info,
     save_route,
@@ -46,7 +46,7 @@ app = FastAPI(lifespan=startup_event)
 app.include_router(main_tsp.router)
 app.include_router(naive_tsp.router)  # For testing
 app.include_router(own_socket.router)
-app.include_router(login_endpoint.router)
+app.include_router(login.router)
 app.include_router(convert_coordinates.router)
 app.include_router(add_request.router)
 app.include_router(get_route_info.router)
