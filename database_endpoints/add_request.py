@@ -20,9 +20,9 @@ async def add_request(input: AddRequestInput):
             lng, lat = point.coordinates[0], point.coordinates[1]
             raw_coordinates.append({"coordinates": [lng, lat]})
             coordinate_names.append(
-                gmaps.reverse_geocode((lat, lng), result_type="street_address")[0][
-                    "formatted_address"
-                ]
+                gmaps.reverse_geocode((lat, lng), 
+                    result_type="street_address|plus_code|premise|establishment|point_of_interest")
+                    [0]["formatted_address"]
             )
         request_id = await add_request_row(person_id, raw_coordinates, coordinate_names)
         return {"request_id": request_id}

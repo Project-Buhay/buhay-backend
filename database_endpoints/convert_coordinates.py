@@ -14,7 +14,12 @@ async def convert_coordinates(points: list[Point]):
         for point in points:
             print(point)
             lng, lat = point.coordinates[0], point.coordinates[1]
-            location_names.append(gmaps.reverse_geocode((lat, lng), result_type="street_address")[0]["formatted_address"])
+            # location_names.append(gmaps.reverse_geocode((lat, lng), result_type="street_address")[0]["formatted_address"])
+            location_names.append(
+                gmaps.reverse_geocode((lat, lng), 
+                    result_type="street_address|plus_code|premise|establishment|point_of_interest")
+                    [0]["formatted_address"]
+            )
         return {"locations": location_names}
     
     except ValueError as e:
