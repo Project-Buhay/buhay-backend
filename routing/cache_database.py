@@ -69,18 +69,22 @@ async def search_login(username: str, password: str):
     print(db_data)
     return db_data
 
-async def add_request_row(constituent_id: int, raw_coordinates: list[Point], coordinate_names: list[str]):
+
+async def add_request_row(
+    constituent_id: int, raw_coordinates: list[Point], coordinate_names: list[str]
+):
     table = "dispatcher_data"
     async with connection_pool.acquire() as connection:
         async with connection.transaction():
             request_id = await connection.fetchval(
-                f"INSERT INTO {table} (coordinate_names, constituent_id, rescued, raw_coordinates) VALUES ($1, $2, $3, $4) RETURNING request_id;", 
+                f"INSERT INTO {table} (coordinate_names, constituent_id, rescued, raw_coordinates) VALUES ($1, $2, $3, $4) RETURNING request_id;",
                 json.dumps({"location_names": coordinate_names}),
                 constituent_id,
                 False,
-                json.dumps({"raw_coordinates": raw_coordinates})
+                json.dumps({"raw_coordinates": raw_coordinates}),
             )
     return request_id
+
 
 # Input is JSON-formatted str
 async def add_route_info_row(route_data: dict):
@@ -89,9 +93,10 @@ async def add_route_info_row(route_data: dict):
         async with connection.transaction():
             route_id = await connection.fetchval(
                 f"INSERT INTO {table} (route_data) VALUES ($1) RETURNING route_id;",
-                json.dumps({"routes": route_data})
+                json.dumps({"routes": route_data}),
             )
     return route_id
+
 
 async def update_route_info_id(request_id: int, route_info_id: int):
     table = "dispatcher_data"
@@ -100,9 +105,10 @@ async def update_route_info_id(request_id: int, route_info_id: int):
             ret = await connection.fetchval(
                 f"UPDATE {table} SET route_info_id = $1 WHERE request_id = $2 RETURNING request_id;",
                 route_info_id,
-                request_id
+                request_id,
             )
     return ret
+
 
 async def route_info(route_id: str):
     table = "route_info"
@@ -121,6 +127,17 @@ async def update_rescued_boolean(request_id: str):
         async with connection.transaction():
             await connection.execute(
                 f"UPDATE {table} SET rescued = true WHERE request_id = $1",
+                request_id,
+            )
+    return
+
+
+async def update_ongoing_data(request_id: str):
+    table = "dispatcher_data"
+    async with connection_pool.acquire() as connection:
+        async with connection.transaction():
+            await connection.execute(
+                f"UPDATE {table} SET ongoing = true WHERE request_id = $1",
                 request_id,
             )
     return
