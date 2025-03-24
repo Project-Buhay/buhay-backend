@@ -97,7 +97,6 @@ async def add_route_info_row(route_data: dict):
             )
     return route_id
 
-
 async def update_route_info_id(request_id: int, route_info_id: int):
     table = "dispatcher_data"
     async with connection_pool.acquire() as connection:
@@ -141,3 +140,13 @@ async def update_ongoing_data(request_id: str):
                 request_id,
             )
     return
+
+async def rescuers():
+    table = "people"
+    async with connection_pool.acquire() as connection:
+        async with connection.transaction():
+            db_data = await connection.fetch(
+                f"SELECT person_id, username FROM {table} WHERE access_control = $1;", 
+                2
+            )
+    return db_data

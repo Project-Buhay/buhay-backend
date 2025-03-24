@@ -1,7 +1,13 @@
 This file serves as documentation for all database endpoints.
 
 - [/login](#login)
-- [/convert_coordinates](#convert_coordinates)
+- [/convert\_coordinates](#convert_coordinates)
+- [/add\_request](#add_request)
+- [/save\_route](#save_route)
+- [/get\_route\_info](#get_route_info)
+- [/update\_rescued](#update_rescued)
+- [/update\_ongoing](#update_ongoing)
+- [/get\_rescuers](#get_rescuers)
 
 # /login
 
@@ -168,7 +174,7 @@ The endpoint is given a request ID `request_id: int`, a starting point `start: P
 
 **Sample Inserted Row in Route_Info**
 
-*Note: `route_id` is the incremented primary id of the new row. 
+*Note: `route_id` is the incremented primary id of the new row.*
 ```JSON
     "route_id": 6,
     "route_data": {
@@ -212,5 +218,79 @@ The endpoint is given a request ID `request_id: int`, a starting point `start: P
     // Other Fields remain the same
     "route_info_id": 6
     // Other Fields remain the same
+}
+```
+
+# /get_route_info
+The endpoint is given a `route_id: int`. It then fetches the data `route_data` of that `route_id` from the `route_info` table.
+
+**Sample Input**
+```JSON
+{
+    "route_id": 45
+}
+```
+
+**Sample Output**
+```JSON
+{
+    "payload": {
+        "route_id": 45,
+        "route_data": // Corresponding route_data JSON in route_info table
+    }
+}
+```
+
+# /update_rescued
+The endpoint is given a `request_id: int`. It then updates the `rescued` field of the `request_id`'s row to `True`.
+
+**Sample Input**
+```JSON
+{
+    "request_id": 14
+}
+```
+
+**Sample Output**
+```JSON
+{
+    "message": "done"
+}
+```
+
+# /update_ongoing
+
+The endpoint is given a `request_id: int`. It then updates the `ongoing` field of the `request_id`'s row to `True`.
+
+**Sample Input**
+```JSON
+{
+    "request_id": 14
+}
+```
+
+**Sample Output**
+```JSON
+{
+    "message": "done"
+}
+```
+
+# /get_rescuers
+
+When the endpoint is called, it returns all the persons from `people` table with an `access_control = 2`. 
+
+*Note: This endpoint does not need an input body.*
+
+**Sample Output**
+```JSON
+{
+    "rescuers": [
+        {
+            "person_id": 2,
+            "username": "Rescuer1"
+        },
+        // ...
+    ]
 }
 ```

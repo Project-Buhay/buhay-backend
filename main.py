@@ -15,6 +15,7 @@ from database_endpoints import (
     save_route,
     update_rescued,
     update_ongoing_endpoint,
+    get_rescuers
 )
 
 from routing.route_directions import directions
@@ -52,6 +53,7 @@ app.include_router(get_route_info.router)
 app.include_router(save_route.router)
 app.include_router(update_rescued.router)
 app.include_router(update_ongoing_endpoint.router)
+app.include_router(get_rescuers.router)
 
 
 # app.include_router(route_directions.router)
