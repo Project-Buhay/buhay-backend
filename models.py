@@ -68,3 +68,8 @@ class UpdateRescued(BaseModel):
 
 class UpdateOngoing(BaseModel):
     request_id: int
+
+
+class Assign(BaseModel):
+    request_id: int
+    rescuer_id: int
