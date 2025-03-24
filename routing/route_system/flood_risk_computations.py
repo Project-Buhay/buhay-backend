@@ -2,7 +2,6 @@ import asyncio
 from typing import Tuple, List
 import networkx as nx
 from shapely.geometry import Point
-from functools import lru_cache
 from concurrent.futures import ThreadPoolExecutor
 import osmnx as ox
 
@@ -39,7 +38,6 @@ async def compute_flood_risk(graph: nx.Graph, nodes: List[int]) -> None:
             graph.nodes[u]["flood_risk"] = risk
 
 
-@lru_cache(maxsize=10000)
 def calculate_flood_risk(point: Tuple[float, float]) -> float:
     # Calculate the flood risk at a given point
 

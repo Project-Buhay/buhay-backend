@@ -1,5 +1,4 @@
 from typing import Tuple
-from functools import lru_cache
 from typing import List
 from geopy import distance
 
@@ -51,7 +50,6 @@ def set_road_network_cache(cache, key):
     ROAD_NETWORK_CACHE[key] = cache
 
 
-@lru_cache(maxsize=1000)
 def calculate_geodesic_distance(
     point1: Tuple[float, float], point2: Tuple[float, float]
 ) -> float:
