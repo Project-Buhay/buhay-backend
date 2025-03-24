@@ -50,19 +50,31 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
         # Fetch and send data specific to the connected user
         conn = await asyncpg.connect(DB_CACHE_URL)
         try:
-            rows = await conn.fetch(
-                QUERY,
-                int(user_id),
-                # user_id,
-            )
-            # print(f"Initial rows for user_id {user_id}: {rows}")
-            if rows:
-                print(f"Initial rows for user_id {user_id}")
-                for row in rows:
-                    await websocket_manager.send_to_user(user_id, dict(row))
+            if user_id != "0":
+                rows = await conn.fetch(
+                    QUERY,
+                    int(user_id),
+                    # user_id,
+                )
+                # print(f"Initial rows for user_id {user_id}: {rows}")
+                if rows:
+                    print(f"Initial rows for user_id {user_id}")
+                    for row in rows:
+                        await websocket_manager.send_to_user(user_id, dict(row))
+                else:
+                    print(f"No rows found for user_id {user_id}")
+                    await websocket_manager.send_to_user(user_id, [])
+
             else:
-                print(f"No rows found for user_id {user_id}")
-                await websocket_manager.send_to_user(user_id, [])
+                dispatcher_rows = await conn.fetch(DISPATCHER_QUERY)
+                # print(f"Initial dispatcher rows: {dispatcher_rows}")
+                if dispatcher_rows:
+                    # print(f"Initial dispatcher rows")
+                    for row in dispatcher_rows:
+                        await websocket_manager.send_to_user("0", dict(row))
+                else:
+                    print(f"No dispatcher rows found")
+                    await websocket_manager.send_to_user(0, [])
         finally:
             await conn.close()
 
