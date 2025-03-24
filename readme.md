@@ -224,7 +224,26 @@ The _tsp endpoint_ accepts a POST Request at the `/tsp` path. This request conta
     git checkout -b bugfix/overflow-issue
     ```
 
-3. From that same branch, make your changes.
+3. Keep your feature branch updated.
+
+   To lessen the possibility of merge conflicts, it's recommended to frequently update your feature branch with the latest changes from the main branch.
+   You can do this by:
+
+   1. First, switching to the main branch and pulling the latest changes
+      ```
+      git checkout main
+      git pull
+      ```
+   
+   2. Then, rebasing your working branch on top of the updated main branch:
+      ```
+      git checkout feature/awesome-feature
+      git rebase main
+      ```
+  
+   This will replay your feature branch commits on top of any updates coming into main branch.
+   
+4. From that same branch, make your changes.
     ```
     # Add your changes
     git add .
@@ -236,7 +255,7 @@ The _tsp endpoint_ accepts a POST Request at the `/tsp` path. This request conta
     git push origin feature/awesome-feature
     ```
 
-4. Finally, open up a **Pull Request** targeting the main branch! Add a descriptive title and a summary of your changes! The PR would automatically then require a review before merging it to main.
+5. Finally, open up a **Pull Request** targeting the main branch! Add a descriptive title and a summary of your changes! The PR would automatically then require a review before merging it to main.
 
 ---
 
