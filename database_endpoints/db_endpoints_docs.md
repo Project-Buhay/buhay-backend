@@ -298,11 +298,11 @@ When the endpoint is called, it returns all the persons from `people` table with
 
 # /assign
 
-The endpoint takes in a `request_id: int` and a `rescuer_id: int`. Then, for the corresponding row of the `request_id` in the `dispatcher_data` table:
+The endpoint takes in a `request_id: int` and a `rescuer_id: int`. Then, for the corresponding row of the `request_id` in the `dispatcher_data` table if the `ongoing = false`:
 - The `old_rescuer_id` field becomes the current value of the `rescuer_id` field of the row.
 - The value in the `rescuer_id` field becomes the new `rescuer_id` from the input. 
 
-Then, the endpoint returns `success = true` upon successful update of the fields. 
+Then, the endpoint returns `success = true` upon successful update of the fields. Otherwise, `success = false` is returned.
 
 **Sample Input**
 ```JSON
