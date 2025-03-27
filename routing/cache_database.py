@@ -156,8 +156,9 @@ async def assign_rescuer(request_id: int, rescuer_id: int):
     async with connection_pool.acquire() as connection:
         async with connection.transaction():
             update_id = await connection.fetchval(
-                f"UPDATE {table} SET old_rescuer_id = rescuer_id, rescuer_id = $1 WHERE request_id = $2 RETURNING request_id",
+                f"UPDATE {table} SET old_rescuer_id = rescuer_id, rescuer_id = $1 WHERE request_id = $2 AND ongoing = $3 RETURNING request_id",
                 rescuer_id, 
-                request_id
+                request_id,
+                False
             )
     return update_id
