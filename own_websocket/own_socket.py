@@ -145,11 +145,8 @@ async def handle_notification(connection, pid, channel, payload):
         dispatcher_rows = await conn.fetch(DISPATCHER_QUERY)
         # print(f"All dispatcher rows: {dispatcher_rows}")
         if dispatcher_rows:
-            await websocket_manager.send_to_user(
-                "0",
-                # [dict(row) for row in dispatcher_rows], if "constituent_id" != 3
-                [dict(row) for row in dispatcher_rows],
-            )
+            for row in dispatcher_rows:
+                await websocket_manager.send_to_user("0", dict(row))
 
         else:
             await websocket_manager.send_to_user("0", [])
