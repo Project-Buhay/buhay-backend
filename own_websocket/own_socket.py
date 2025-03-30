@@ -107,7 +107,6 @@ async def handle_notification(connection, pid, channel, payload):
                 payload_data.get("old_rescuer_id")
             )  # Extract old rescuer_id
             rescuer_id = str(payload_data.get("rescuer_id"))  # Extract new rescuer_id
-            request_id = str(payload_data.get("request_id"))  # Extract id of modified entry
 
             # old_rescuer_id = payload_data.get("old_rescuer_id")
             # rescuer_id = payload_data.get("rescuer_id")
@@ -143,15 +142,11 @@ async def handle_notification(connection, pid, channel, payload):
             else:
                 await websocket_manager.send_to_user(rescuer_id, [])
 
-        if request_id:
-            DISPATCHER_UPDATE_QUERY = f"SELECT * FROM dispatcher_data WHERE request_id = {request_id} ORDER BY request_id ASC"
-            dispatcher_rows = await conn.fetch(DISPATCHER_UPDATE_QUERY)
-
-            if dispatcher_rows:
-                assert len(dispatcher_rows) == 1
-                await websocket_manager.send_to_user("0", dict(dispatcher_rows[0]))
-            else:
-                await websocket_manager.send_to_user("0", [])
+        dispatcher_rows = await conn.fetch(DISPATCHER_QUERY)
+        # print(f"All dispatcher rows: {dispatcher_rows}")
+        if dispatcher_rows:
+            for row in dispatcher_rows:
+                await websocket_manager.send_to_user("0", dict(row))
 
         else:
             await websocket_manager.send_to_user("0", [])
