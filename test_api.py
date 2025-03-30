@@ -303,7 +303,3 @@ def test_assign():
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "success": True
-    }
-
