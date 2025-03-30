@@ -9,9 +9,7 @@ router = APIRouter()
 
 
 QUERY = "SELECT * FROM dispatcher_data WHERE rescuer_id = $1 AND rescued = false ORDER BY request_id ASC"
-DISPATCHER_QUERY = (
-    "SELECT * FROM dispatcher_data WHERE rescued = false ORDER BY request_id ASC"
-)
+DISPATCHER_QUERY = "SELECT * FROM dispatcher_data WHERE rescued = false AND constituent_id != 3 ORDER BY request_id ASC"
 # QUERY = (
 #     "SELECT * FROM test_table WHERE rescuer_id = $1 AND done = false ORDER BY id ASC"
 # )
@@ -68,13 +66,14 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
             else:
                 dispatcher_rows = await conn.fetch(DISPATCHER_QUERY)
                 # print(f"Initial dispatcher rows: {dispatcher_rows}")
+                print(type(dispatcher_rows))
                 if dispatcher_rows:
                     # print(f"Initial dispatcher rows")
                     for row in dispatcher_rows:
-                        await websocket_manager.send_to_user("0", dict(row))
+                        await websocket_manager.send_to_user(user_id, dict(row))
                 else:
                     print(f"No dispatcher rows found")
-                    await websocket_manager.send_to_user(0, [])
+                    await websocket_manager.send_to_user(user_id, [])
         finally:
             await conn.close()
 
@@ -147,11 +146,13 @@ async def handle_notification(connection, pid, channel, payload):
         # print(f"All dispatcher rows: {dispatcher_rows}")
         if dispatcher_rows:
             await websocket_manager.send_to_user(
-                "0", [dict(row) for row in dispatcher_rows]
+                "0",
+                # [dict(row) for row in dispatcher_rows], if "constituent_id" != 3
+                [dict(row) for row in dispatcher_rows],
             )
 
         else:
-            await websocket_manager.send_to_user(0, [])
+            await websocket_manager.send_to_user("0", [])
 
     finally:
         await conn.close()
