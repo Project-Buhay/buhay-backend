@@ -76,7 +76,7 @@ def test_convert_coordinates():
     assert response.json() == {
         "locations": [
             "J3X9+G94, P. Velasquez Street, Diliman, Quezon City, 1800 Metro Manila, Philippines",
-            "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines",
+            "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines"
         ]
     }
 
@@ -250,4 +250,60 @@ def test_update_rescued():
     response = requests.post(url, json={"request_id": 0})
 
     assert response.status_code == 200
-    assert response.json() == {"message": "done"}
+    assert response.json() == {
+        "message": "done"
+    }
+
+def test_update_ongoing():
+    url = f"{API_BASE_URL}/update_ongoing"
+    response = requests.post(
+        url,
+        json={
+            "request_id": 1
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "done"
+    }
+
+def test_get_rescuers():
+    url = f"{API_BASE_URL}/get_rescuers"
+    response = requests.post(
+        url,
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "rescuers": [
+            {
+                "person_id": 2,
+                "username": "Rescuer1"
+            },
+            {
+                "person_id": 4,
+                "username": "Rescuer2"
+            },
+            {
+                "person_id": 5,
+                "username": "Rescuer3"
+            }
+        ]
+    }
+
+def test_assign():
+    url = f"{API_BASE_URL}/assign"
+    response = requests.post(
+        url,
+        json={
+            "request_id": 1,
+            "rescuer_id": 2
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "success": True
+    }
+
