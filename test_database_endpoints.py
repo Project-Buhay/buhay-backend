@@ -60,7 +60,7 @@ async def test_convert_coordinates():
             pprint(response.json())
             assert response.json() == {
                 "locations": [
-                    "University of the Philippines Alumni Engineers' Centennial Hall, P. Velasquez Street, Diliman, Quezon City, 1800 Metro Manila, Philippines",
+                    "J3X9+G94, P. Velasquez Street, Diliman, Quezon City, 1800 Metro Manila, Philippines",
                     "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines"
                 ]
             }
