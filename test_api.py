@@ -29,13 +29,37 @@ def test_naive_tsp():
     ]
 
 
-def test_login():
+def test_login_valid():
     url = f"{API_BASE_URL}/login"
     response = requests.post(
-        url, json={"username": "Constituent1", "password": "Constituent1"}
+        url,
+        json={
+            "username": "Constituent1",
+            "password": "Constituent1"
+        }
     )
 
     assert response.status_code == 200
+    assert response.json() == {
+        "person_id": 1,
+        "access_control": 1
+    }
+
+def test_login_invalid():
+    url = f"{API_BASE_URL}/login"
+    response = requests.post(
+        url,
+        json={
+            "username": "UserNameThatIsNotInDatabase",
+            "password": "PasswordThatIsNotInDatabase"
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "person_id": 0,
+        "access_control": 0
+    }
 
 
 def test_convert_coordinates():
