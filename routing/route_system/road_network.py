@@ -94,7 +94,7 @@ async def load_road_network_from_db() -> nx.Graph:
 
         # Load the graph from the json data
         graph_data = json.loads(data)
-        G = json_graph.node_link_graph(graph_data)
+        G = json_graph.node_link_graph(graph_data, edges="links")
         return G
 
     return None
