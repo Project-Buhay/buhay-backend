@@ -1,6 +1,6 @@
 import requests
 
-API_BASE_URL = "https://buhay-backend-v2-production.up.railway.app"
+API_BASE_URL = "http://127.0.0.1:8000"
 
 
 # Get
