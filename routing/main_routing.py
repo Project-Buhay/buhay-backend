@@ -8,7 +8,8 @@ from routing.global_variables import (
 )
 from routing.route_system.safest_route_computation import find_safest_route
 from routing.direction_system.directions import get_directions
-from routing.cache_database import read_database
+
+# from routing.cache_database import read_database
 
 
 async def compute_best_route_from_request(start: str, end: str):
@@ -20,12 +21,12 @@ async def compute_best_route_from_request(start: str, end: str):
     # Hash the coordinates to create a unique id
     hashed_id = sha256(f"{start_lng}{start_lat}{end_lng}{end_lat}".encode()).hexdigest()
 
-    # Check if hashed_id exists in the cache db
-    db_data = await read_database(hashed_id)
+    # # Check if hashed_id exists in the cache db
+    # db_data = await read_database(hashed_id)
 
-    # If it exists, return the route from the cache db
-    if db_data != []:
-        return None, None, None, None, db_data
+    # # If it exists, return the route from the cache db
+    # if db_data != []:
+    #     return None, None, None, None, db_data
 
     start_time = time.time()
 
