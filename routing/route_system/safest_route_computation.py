@@ -14,7 +14,7 @@ async def find_safest_route(
 ) -> Tuple[List[Tuple[float, float]], List[List[float]], List[RouteInfo]]:
 
     # Get the road network graph
-    G = await get_road_network(start, end)
+    G = await get_road_network()
 
     # Find the nearest nodes to the start and end coordinates
     start_node = ox.nearest_nodes(G, start[1], start[0])
