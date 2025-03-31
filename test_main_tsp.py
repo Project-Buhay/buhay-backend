@@ -1,4 +1,5 @@
 import pytest
+
 # import warnings
 # import json
 
@@ -7,6 +8,7 @@ import pytest
 # from fastapi import status
 from httpx import ASGITransport, AsyncClient
 from main import app, startup_event
+
 # from models import Point, TSPinput
 
 # from random import randint
@@ -40,13 +42,13 @@ from main import app, startup_event
 #         "other_points": other_points
 #     }
 #     return ret
-  
+
 # @pytest.mark.asyncio
 # async def test_tsp():
 #     start = time()
 #     async with startup_event(app):
 #         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-#             request = client.build_request(url="/tsp", method="GET", 
+#             request = client.build_request(url="/tsp", method="GET",
 #                 json={
 #                     "start": {"coordinates": [1,1]},
 #                     "other_points": [
@@ -104,7 +106,7 @@ from main import app, startup_event
 #         tsp_json = tsp_response.json()
 #         print(f'/tsp: {tsp_json}, distance: {total_haversine(tsp_json, len(inp["other_points"])+1)}')
 #         print()
-    
+
 #     return tsp_json
 
 
@@ -143,17 +145,20 @@ from main import app, startup_event
 #     print(f'Total time: {total_end - total_start}')
 #     print(f'Average time per test case: {(total_end - total_start) / test_cases}')
 
+
 @pytest.mark.asyncio
 async def test_tsp():
     async with startup_event(app):
-        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-            request = client.build_request(url="/tsp", method="POST", 
-                json= {
+        async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            request = client.build_request(
+                url="/tsp",
+                method="POST",
+                json={
                     "start": {"coordinates": [121.0696276, 14.6567504]},
-                    "other_points": [
-                        {"coordinates": [121.0698762, 14.6536758]}
-                    ]
-                }
+                    "other_points": [{"coordinates": [121.0698762, 14.6536758]}],
+                },
             )
             response = await client.send(request)
 
@@ -163,8 +168,8 @@ async def test_tsp():
                 "end": [121.0698762, 14.6536758],
                 "data": {
                     "route": {
-                        "duration": 8.76583198384868,
-                        "distanceKm": 0.7304859986540565
+                        "duration": 9.041021783570768,
+                        "distanceKm": 0.7534184819642306,
                     },
                     "geojson": {
                         "type": "FeatureCollection",
@@ -177,42 +182,40 @@ async def test_tsp():
                                         [121.0698801, 14.6537622],
                                         [121.0698984, 14.6537919],
                                         [121.0698968, 14.653819],
-                                        [121.0699702, 14.653818],
-                                        [121.0699698, 14.6539568],
-                                        [121.0704004, 14.6539652],
-                                        [121.070528, 14.6539677],
-                                        [121.0707416, 14.654112],
-                                        [121.0707382, 14.6544471],
-                                        [121.0707296, 14.6551461],
-                                        [121.0707226, 14.6555607],
-                                        [121.0707388, 14.6560546],
-                                        [121.0707449, 14.6561442],
-                                        [121.0706345, 14.6561433],
-                                        [121.0706336, 14.6563262],
-                                        [121.0706319, 14.6566677],
-                                        [121.0703873, 14.6566702],
-                                        [121.0698002, 14.6575488],
+                                        [121.0696052, 14.6538097],
+                                        [121.0687008, 14.653804],
+                                        [121.0686251, 14.6538026],
+                                        [121.0686228, 14.6538697],
+                                        [121.0686219, 14.6539378],
+                                        [121.0686202, 14.6540599],
+                                        [121.0686184, 14.6541901],
+                                        [121.0686178, 14.6542372],
+                                        [121.0685931, 14.6560372],
+                                        [121.0685919, 14.6561265],
+                                        [121.0685887, 14.6563592],
+                                        [121.0685724, 14.657549],
+                                        [121.0691674, 14.6575465],
                                         [121.0692788, 14.6575483],
                                         [121.0692923, 14.6571388],
                                         [121.0692924, 14.6570228],
                                         [121.0692926, 14.6566825],
-                                        [121.069507, 14.6566822]
-                                    ]
+                                        [121.069507, 14.6566822],
+                                    ],
                                 },
-                                "properties": {}
+                                "properties": {},
                             }
-                        ]
+                        ],
                     },
-                    "message": "Safe route found."
-                }
+                    "message": "Safe route found.",
+                },
             },
             {
                 "start": [121.0698762, 14.6536758],
                 "end": [121.0696276, 14.6567504],
                 "data": {
                     "route": {
-                        "duration": 8.76583198384868,
-                        "distanceKm": 0.7304859986540565
+                        "duration": 9.041021783570768,
+                        "distanceKm": 0.7534184819642306,
                     },
                     "geojson": {
                         "type": "FeatureCollection",
@@ -227,31 +230,29 @@ async def test_tsp():
                                         [121.0692924, 14.6570228],
                                         [121.0692923, 14.6571388],
                                         [121.0692788, 14.6575483],
-                                        [121.0698002, 14.6575488],
-                                        [121.0703873, 14.6566702],
-                                        [121.0706319, 14.6566677],
-                                        [121.0706336, 14.6563262],
-                                        [121.0706345, 14.6561433],
-                                        [121.0707449, 14.6561442],
-                                        [121.0707388, 14.6560546],
-                                        [121.0707226, 14.6555607],
-                                        [121.0707296, 14.6551461],
-                                        [121.0707382, 14.6544471],
-                                        [121.0707416, 14.654112],
-                                        [121.070528, 14.6539677],
-                                        [121.0704004, 14.6539652],
-                                        [121.0699698, 14.6539568],
-                                        [121.0699702, 14.653818],
+                                        [121.0691674, 14.6575465],
+                                        [121.0685724, 14.657549],
+                                        [121.0685887, 14.6563592],
+                                        [121.0685919, 14.6561265],
+                                        [121.0685931, 14.6560372],
+                                        [121.0686178, 14.6542372],
+                                        [121.0686184, 14.6541901],
+                                        [121.0686202, 14.6540599],
+                                        [121.0686219, 14.6539378],
+                                        [121.0686228, 14.6538697],
+                                        [121.0686251, 14.6538026],
+                                        [121.0687008, 14.653804],
+                                        [121.0696052, 14.6538097],
                                         [121.0698968, 14.653819],
                                         [121.0698984, 14.6537919],
-                                        [121.0698801,14.6537622]
-                                    ]
+                                        [121.0698801, 14.6537622],
+                                    ],
                                 },
-                                "properties": {}
+                                "properties": {},
                             }
-                        ]
+                        ],
                     },
-                    "message": "Safe route found."
-                }
-            }
+                    "message": "Safe route found.",
+                },
+            },
         ]
