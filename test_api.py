@@ -32,18 +32,12 @@ def test_naive_tsp():
 def test_login_valid():
     url = f"{API_BASE_URL}/login"
     response = requests.post(
-        url,
-        json={
-            "username": "Constituent1",
-            "password": "Constituent1"
-        }
+        url, json={"username": "Constituent1", "password": "Constituent1"}
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "person_id": 1,
-        "access_control": 1
-    }
+    assert response.json() == {"person_id": 1, "access_control": 1}
+
 
 def test_login_invalid():
     url = f"{API_BASE_URL}/login"
@@ -51,15 +45,12 @@ def test_login_invalid():
         url,
         json={
             "username": "UserNameThatIsNotInDatabase",
-            "password": "PasswordThatIsNotInDatabase"
-        }
+            "password": "PasswordThatIsNotInDatabase",
+        },
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "person_id": 0,
-        "access_control": 0
-    }
+    assert response.json() == {"person_id": 0, "access_control": 0}
 
 
 def test_convert_coordinates():
@@ -76,7 +67,7 @@ def test_convert_coordinates():
     assert response.json() == {
         "locations": [
             "J3X9+G94, P. Velasquez Street, Diliman, Quezon City, 1800 Metro Manila, Philippines",
-            "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines"
+            "41-B Mapagkawanggawa, Diliman, Lungsod Quezon, 1101 Kalakhang Maynila, Philippines",
         ]
     }
 
@@ -250,23 +241,16 @@ def test_update_rescued():
     response = requests.post(url, json={"request_id": 0})
 
     assert response.status_code == 200
-    assert response.json() == {
-        "message": "done"
-    }
+    assert response.json() == {"message": "done"}
+
 
 def test_update_ongoing():
     url = f"{API_BASE_URL}/update_ongoing"
-    response = requests.post(
-        url,
-        json={
-            "request_id": 1
-        }
-    )
+    response = requests.post(url, json={"request_id": 1})
 
     assert response.status_code == 200
-    assert response.json() == {
-        "message": "done"
-    }
+    assert response.json() == {"message": "done"}
+
 
 def test_get_rescuers():
     url = f"{API_BASE_URL}/get_rescuers"
@@ -277,29 +261,46 @@ def test_get_rescuers():
     assert response.status_code == 200
     assert response.json() == {
         "rescuers": [
-            {
-                "person_id": 2,
-                "username": "Rescuer1"
-            },
-            {
-                "person_id": 4,
-                "username": "Rescuer2"
-            },
-            {
-                "person_id": 5,
-                "username": "Rescuer3"
-            }
+            {"person_id": 2, "username": "Rescuer1"},
+            {"person_id": 4, "username": "Rescuer2"},
+            {"person_id": 5, "username": "Rescuer3"},
         ]
     }
 
+
 def test_assign():
     url = f"{API_BASE_URL}/assign"
+    response = requests.post(url, json={"request_id": 1, "rescuer_id": 2})
+
+    assert response.status_code == 200
+
+
+def test_compare_coordinates():
+    url = f"{API_BASE_URL}/compare_coordinates"
     response = requests.post(
         url,
         json={
-            "request_id": 1,
-            "rescuer_id": 2
-        }
+            "person_id": 3,
+            "coordinates": [
+                {"coordinates": [121.06211566207924, 14.646743398830466]},
+                {"coordinates": [121.06210078349255, 14.646615760409261]},
+            ],
+        },
     )
 
     assert response.status_code == 200
+    assert response.json() == {"message": "true"}
+
+    response = requests.post(
+        url,
+        json={
+            "person_id": 3,
+            "coordinates": [
+                {"coordinates": [121.06211326644774, 14.6466919912408]},
+                {"coordinates": [121.06210068276675, 14.646621999279489]},
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"message": "false"}

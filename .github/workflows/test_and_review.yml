@@ -44,7 +44,7 @@ jobs:
           GOOGLE_MAPS_API: ${{ secrets.GOOGLE_MAPS_API }}
         run: |
           nohup uvicorn main:app --host 127.0.0.1 --port 8000 & # run in background
-          sleep 5 # wait to start
+          sleep 60 # wait to start
 
       - name: Run pytest with secrets
         env:

@@ -9,43 +9,31 @@ from routing.global_variables import (
     set_road_network_cache,
     calculate_geodesic_distance,
 )
+
 from routing.route_system.flood_risk_computations import (
     compute_flood_risk,
     assign_edge_flood_risk,
 )
+from qc_coordinates import QUEZON_CITY
 
 
-async def get_road_network(
-    start: Tuple[float, float], end: Tuple[float, float]
-) -> nx.Graph:
+async def get_road_network() -> nx.Graph:
 
     # Get the road network cache
     road_network_cache = get_road_network_cache()
 
-    # Initialize the key for the cache to be the start and end coordinates
-    key = (start, end)
-
     # Check if the road network is already in the cache
-    if key in road_network_cache:
-        return road_network_cache[key]
+    if "QUEZON_CITY" in road_network_cache:
+        return road_network_cache["QUEZON_CITY"]
 
-    # Calculate the bounding box for the road network
-    distance = calculate_geodesic_distance(start, end)
-    # Reducing the buffer size below 0.01 improves the time taken to compute the flood risk
-    # However, it may result in a less accurate route or route is cut off due to the buffer size
-    buffer = min(0.01, distance * 0.01)
 
-    north = max(start[0], end[0]) + buffer
-    south = min(start[0], end[0]) - buffer
-    east = max(start[1], end[1]) + buffer
-    west = min(start[1], end[1]) - buffer
-
-    # Get the road network graph
-    bbox = (west, south, east, north)
+async def get_quezon_city_road_network() -> nx.Graph:
     with concurrent.futures.ThreadPoolExecutor() as executor:
         G = await asyncio.get_event_loop().run_in_executor(
             executor,
-            lambda: ox.graph_from_bbox(bbox, network_type="walk", simplify=True),
+            lambda: ox.graph_from_polygon(
+                QUEZON_CITY, network_type="all", simplify=True
+            ),
         )
 
     # Compute the flood risk for each node
@@ -54,7 +42,6 @@ async def get_road_network(
     # Assign flood risk to edges based on node flood risks
     await assign_edge_flood_risk(G)
 
-    # Add the road network to the cache
-    set_road_network_cache(G, key)
+    set_road_network_cache(G, "QUEZON_CITY")
 
     return G
