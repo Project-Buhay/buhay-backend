@@ -1,6 +1,7 @@
 import asyncpg
 import json
 from pprint import pprint
+import networkx as nx
 
 from db_env import (
     DB_CACHE_NAME,
@@ -97,6 +98,7 @@ async def add_route_info_row(route_data: dict):
             )
     return route_id
 
+
 async def update_route_info_id(request_id: int, route_info_id: int):
     table = "dispatcher_data"
     async with connection_pool.acquire() as connection:
@@ -141,15 +143,16 @@ async def update_ongoing_data(request_id: str):
             )
     return
 
+
 async def rescuers():
     table = "people"
     async with connection_pool.acquire() as connection:
         async with connection.transaction():
             db_data = await connection.fetch(
-                f"SELECT person_id, username FROM {table} WHERE access_control = $1;", 
-                2
+                f"SELECT person_id, username FROM {table} WHERE access_control = $1;", 2
             )
     return db_data
+
 
 async def assign_rescuer(request_id: int, rescuer_id: int):
     table = "dispatcher_data"
@@ -157,8 +160,31 @@ async def assign_rescuer(request_id: int, rescuer_id: int):
         async with connection.transaction():
             update_id = await connection.fetchval(
                 f"UPDATE {table} SET old_rescuer_id = rescuer_id, rescuer_id = $1 WHERE request_id = $2 AND ongoing = $3 RETURNING request_id",
-                rescuer_id, 
+                rescuer_id,
                 request_id,
-                False
+                False,
             )
     return update_id
+
+
+async def save_qc_road_network_to_db(G: nx.Graph):
+    table = "qc_data"
+    async with connection_pool.acquire() as connection:
+        async with connection.transaction():
+            await connection.execute(
+                f"INSERT INTO {table} (id, data) VALUES ($1, $2);", "QUEZON_CITY", G
+            )
+    return
+
+
+async def get_qc_road_network_cache():
+    table = "qc_data"
+    try:
+        async with connection_pool.acquire() as connection:
+            result = await connection.fetch(
+                f"SELECT data FROM {table} WHERE id = $1", "QUEZON_CITY"
+            )
+            return result
+    except Exception as e:
+        print(f"Database error: {e}")
+        return None

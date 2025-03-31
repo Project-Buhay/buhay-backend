@@ -4,9 +4,11 @@ import time
 from routing.geojson import create_geojson
 from models import Route, DirectionsResponse, DirectionsRequest
 from routing.main_routing import compute_best_route_from_request
-from routing.cache_database import (
-    write_to_database,
-)
+
+# from routing.cache_database import (
+#     write_to_database,
+# )
+
 
 async def directions(directionRequest: DirectionsRequest) -> DirectionsResponse:
     start_time = time.time()
@@ -46,10 +48,10 @@ async def directions(directionRequest: DirectionsRequest) -> DirectionsResponse:
                 message="Safe route found.",
             )
 
-            await write_to_database(
-                hashed_id,
-                route_data.model_dump_json(),
-            )
+            # await write_to_database(
+            #     hashed_id,
+            #     route_data.model_dump_json(),
+            # )
 
             end_time = time.time()
             print(f"Full running time: {end_time - start_time:.2f} seconds")
