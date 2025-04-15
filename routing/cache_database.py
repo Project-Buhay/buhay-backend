@@ -79,7 +79,7 @@ async def add_request_row(
         async with connection.transaction():
             request_id = await connection.fetchval(
                 f"INSERT INTO {table} (coordinate_names, constituent_id, rescued, raw_coordinates) VALUES ($1, $2, $3, $4) RETURNING request_id;",
-                json.dumps({"location_names": coordinate_names}),
+                json.dumps({"location_names": []}),
                 constituent_id,
                 False,
                 json.dumps({"raw_coordinates": raw_coordinates}),
@@ -99,14 +99,17 @@ async def add_route_info_row(route_data: dict):
     return route_id
 
 
-async def update_route_info_id(request_id: int, route_info_id: int):
+async def update_route_info_id(
+    request_id: int, route_info_id: int, coordinate_names: list[str]
+):
     table = "dispatcher_data"
     async with connection_pool.acquire() as connection:
         async with connection.transaction():
             ret = await connection.fetchval(
-                f"UPDATE {table} SET route_info_id = $1 WHERE request_id = $2 RETURNING request_id;",
+                f"UPDATE {table} SET route_info_id = $1, coordinate_names = $3 WHERE request_id = $2 RETURNING request_id;",
                 route_info_id,
                 request_id,
+                json.dumps({"location_names": coordinate_names}),
             )
     return ret
 
